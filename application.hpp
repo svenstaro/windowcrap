@@ -13,6 +13,7 @@ public:
 
 public slots:
     void update();
+    void spawnStuff();
 
 private:
     QSharedPointer<b2World> mWorld;

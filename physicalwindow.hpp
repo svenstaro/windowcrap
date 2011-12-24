@@ -28,6 +28,7 @@ public:
     void update();
 
 private:
+    QString mType;
     QMainWindow mWindow;
     QLabel mLabel;
     QPixmap mPixmap;
