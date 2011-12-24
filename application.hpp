@@ -1,15 +1,17 @@
 #ifndef APPLICATION_HPP
 #define APPLICATION_HPP
 
+#include <QtGui/QApplication>
+
 #include "physicalwindow.hpp"
 
-class Application : public QObject {
+class Application : public QApplication {
     Q_OBJECT
 public:
-    Application();
+    Application(int argc, char** argv);
     ~Application();
 
-    void init(int argc, char** argv);
+    void init();
 
 public slots:
     void update();

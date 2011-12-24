@@ -11,7 +11,11 @@ PhysicalWindow::PhysicalWindow(int x, int y, int width, int height,
     QPainter painter(&mPixmap);
     QPainterPath path;
     painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.setBrush(QBrush(Qt::green));
+    //painter.setBrush(QBrush(Qt::green));
+    QRadialGradient gradient(QPointF(width/2, height/2), width/2);
+    gradient.setColorAt(0, QColor((qrand() % 255), (qrand() % 255), (qrand() % 255)));
+    gradient.setColorAt(1, QColor((qrand() % 255), (qrand() % 255), (qrand() % 255)));
+    painter.setBrush(QBrush(gradient));
     path.addEllipse(0, 0, width, height);
     painter.drawPath(path);
     mLabel.setParent(&mWindow);
@@ -34,7 +38,7 @@ PhysicalWindow::PhysicalWindow(int x, int y, int width, int height,
     dynamic_circle.m_radius = width/2;
     b2FixtureDef fixture_def;
     fixture_def.shape = &dynamic_circle;
-    fixture_def.density = 1.0f;
+    fixture_def.density = 10.0f;
     fixture_def.friction = 0.3f;
     mPhysicsBody->CreateFixture(&fixture_def);
 }

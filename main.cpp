@@ -4,17 +4,19 @@
 #include "application.hpp"
 
 int main (int argc, char **argv) {
-    QApplication qapplication(argc, argv);
+    Application application(argc, argv);
+    application.init();
 
-    Application application;
-    application.init(argc, argv);
-
-    QTimer timer;
-    timer.start(20);
-
-    QObject::connect(&timer,       SIGNAL(timeout()),
+    QTimer tick_timer;
+    tick_timer.start(20);
+    QObject::connect(&tick_timer,  SIGNAL(timeout()),
                      &application, SLOT(update()));
 
+    QTimer spawn_timer;
+    spawn_timer.start(100);
+    QObject::connect(&spawn_timer, SIGNAL(timeout()),
+                     &application, SLOT(spawnStuff()));
 
-    return qapplication.exec();
+
+    return application.exec();
 }
