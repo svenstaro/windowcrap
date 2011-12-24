@@ -1,9 +1,3 @@
-#include <libwnck/libwnck.h>
-
-#include <QtGui/QPainter>
-#include <QtGui/QMovie>
-#include <QtCore/QDebug>
-
 #include "application.hpp"
 
 Application::Application() {}
@@ -15,61 +9,26 @@ void Application::init(int argc, char** argv) {
     mWorld = QSharedPointer<b2World>(new b2World(gravity));
     mWorld->SetAllowSleeping(false);
 
-    // DEBUG
-    /*
-    QMainWindow window_debug;
-    QPixmap pixmap_debug(100, 100);
-    pixmap_debug.fill(QColor(0, 0, 0, 0));
-    QPainter painter_debug(&pixmap_debug);
-    QPainterPath path_debug;
-    painter_debug.setRenderHint(QPainter::Antialiasing, true);
-    painter_debug.setBrush(QBrush(Qt::green));
-    path_debug.addRect(0, 0, 100, 100);
-    painter_debug.drawPath(path_debug);
-    QLabel label_debug(&window_debug);
-    label_debug.setPixmap(pixmap_debug);
+    mPhysicalWindows.append(QSharedPointer<PhysicalWindow>(new PhysicalWindow(100, 100, 100, 100, mWorld)));
 
-    label_debug.resize(100, 100);
-    window_debug.setAttribute(Qt::WA_TranslucentBackground);
-    window_debug.setWindowFlags(Qt::FramelessWindowHint);
-    window_debug.setWindowFlags(Qt::X11BypassWindowManagerHint);
-
-    window_debug.show();*/
-
-    // BALL
-    QPixmap pixmap(100, 100);
-    mBallPixmap = pixmap;
-    mBallPixmap.fill(QColor(0, 0, 0, 0));
-    QPainter painter(&mBallPixmap);
-    QPainterPath path;
-    painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.setBrush(QBrush(Qt::green));
-    path.addEllipse(0, 0, 100, 100);
-    painter.drawPath(path);
-    mBallLabel.setParent(&mBallWindow);
-    mBallLabel.setPixmap(mBallPixmap);
-
-    mBallLabel.resize(mBallPixmap.size().width(), mBallPixmap.size().height());
-    mBallWindow.resize(mBallPixmap.size().width(), mBallPixmap.size().height());
-    mBallWindow.setAttribute(Qt::WA_TranslucentBackground);
-    mBallWindow.setWindowFlags(Qt::FramelessWindowHint);
-    mBallWindow.setWindowFlags(Qt::X11BypassWindowManagerHint);
-
-    mBallWindow.show();
-
-    // BALL BODY
-    b2BodyDef body_def;
-    body_def.type = b2_dynamicBody;
-    body_def.position.Set(100.0f, 100.0f);
-    mBallBody = mWorld->CreateBody(&body_def);
-    b2CircleShape dynamic_circle;
-    //dynamic_circle.m_p.Set(2.0f, 3.0f);
-    dynamic_circle.m_radius = 10.0f;
-    b2FixtureDef fixture_def;
-    fixture_def.shape = &dynamic_circle;
-    fixture_def.density = 1.0f;
-    fixture_def.friction = 0.3f;
-    mBallBody->CreateFixture(&fixture_def);
+    // DEBUG WINDOWS
+    //mDebugWindows.append(QSharedPointer<QMainWindow>(new QMainWindow));
+    //mDebugPixmaps.append(QSharedPointer<QPixmap>(new QPixmap(100, 100)));
+    //mDebugPixmaps.back()->fill(QColor(0, 0, 0, 0));
+    //QPainter painter_debug(mDebugPixmaps.back().data());
+    //QPainterPath path_debug;
+    //painter_debug.setRenderHint(QPainter::Antialiasing, true);
+    //painter_debug.setBrush(QBrush(Qt::green));
+    //path_debug.addRect(0, 0, 100, 100);
+    //painter_debug.drawPath(path_debug);
+    //mDebugLabels.append(QSharedPointer<QLabel>(new QLabel(mDebugWindows.back().data())));
+    //mDebugLabels.back()->setPixmap(*mDebugPixmaps.back().data());
+    //mDebugLabels.back()->resize(100, 100);
+    //mDebugWindows.back()->resize(100, 100);
+    //mDebugWindows.back()->setAttribute(Qt::WA_TranslucentBackground);
+    //mDebugWindows.back()->setWindowFlags(Qt::FramelessWindowHint);
+    //mDebugWindows.back()->setWindowFlags(Qt::X11BypassWindowManagerHint);
+    //mDebugWindows.back()->show();
 
     /*
     // WINDOW STUFF
@@ -111,13 +70,14 @@ void Application::init(int argc, char** argv) {
 
 }
 
-void Application::tick() {
+void Application::update() {
         // SETUP
         float32 timeStep = 1.0/60.f;
         int32 velocityIterations = 6;
         int32 positionIterations = 2;
 
         mWorld->Step(timeStep, velocityIterations, positionIterations);
-        mBallWindow.move((int)mBallBody->GetPosition().x, (int)mBallBody->GetPosition().y);
-        qDebug() << mBallBody->GetPosition().x << " " << mBallBody->GetPosition().y;
+        foreach(QSharedPointer<PhysicalWindow> physwin, mPhysicalWindows) {
+            physwin->update();
+        }
 }

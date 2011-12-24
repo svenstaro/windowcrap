@@ -13,7 +13,7 @@ int main (int argc, char **argv) {
     timer.start(20);
 
     QObject::connect(&timer,       SIGNAL(timeout()),
-                     &application, SLOT(tick()));
+                     &application, SLOT(update()));
 
 
     return qapplication.exec();

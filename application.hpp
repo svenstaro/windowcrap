@@ -1,12 +1,7 @@
 #ifndef APPLICATION_HPP
 #define APPLICATION_HPP
 
-#include <Box2D/Box2D.h>
-
-#include <QtGui/QMainWindow>
-#include <QtGui/QLabel>
-#include <QtCore/QObject>
-#include <QtCore/QSharedPointer>
+#include "physicalwindow.hpp"
 
 class Application : public QObject {
     Q_OBJECT
@@ -17,14 +12,12 @@ public:
     void init(int argc, char** argv);
 
 public slots:
-    void tick();
+    void update();
 
 private:
     QSharedPointer<b2World> mWorld;
-    QMainWindow mBallWindow;
-    QLabel mBallLabel;
-    QPixmap mBallPixmap;
-    b2Body* mBallBody;
+
+    QList<QSharedPointer<PhysicalWindow> > mPhysicalWindows;
 };
 
 #endif
